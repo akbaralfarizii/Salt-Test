@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+    <style>
+        .delete-btn {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="my-4">Data Konsumen</h1>
+
+    <div class="row mb-3">
+        <div class="col text-right">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tambahKonsumenModal">
+                Tambah Data Konsumen
+            </button>
+        </div>
+    </div>
+
+    <table id="data-table" class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nama</th>
+            <th>Alamat</th>
+            <th>Kota</th>
+            <th>Provinsi</th>
+            <th>Tanggal Registrasi</th>
+            <th>Status</th>
+            <th>Aksi</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Data tabel -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal Tambah Data Konsumen -->
+<div class="modal fade" id="tambahKonsumenModal" tabindex="-1" role="dialog" aria-labelledby="tambahKonsumenModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tambahKonsumenModalLabel">Tambah Data Konsumen</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="konsumenForm">
+                    <div class="form-group">
+                        <label for="nama">Nama:</label>
+                        <input type="text" class="form-control" id="nama" name="nama" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="alamat">Alamat:</label>
+                        <input type="text" class="form-control" id="alamat" name="alamat" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="kota">Kota:</label>
+                        <input type="text" class="form-control" id="kota" name="kota" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="provinsi">Provinsi:</label>
+                        <input type="text" class="form-control" id="provinsi" name="provinsi" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Status:</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="status" id="statusAktif" value="1" required>
+                            <label class="form-check-label" for="statusAktif">Aktif</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="status" id="statusNonAktif" value="0" required>
+                            <label class="form-check-label" for="statusNonAktif">Non-Aktif</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" id="simpanKonsumen">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Edit Data Konsumen -->
+<div class="modal fade" id="editKonsumenModal" tabindex="-1" role="dialog" aria-labelledby="editKonsumenModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editKonsumenModalLabel">Edit Data Konsumen</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editKonsumenForm">
+                    <div class="form-group">
+                        <label for="namaEdit">Nama:</label>
+                        <input type="text" class="form-control" id="namaEdit" name="namaEdit" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="alamatEdit">Alamat:</label>
+                        <input type="text" class="form-control" id="alamatEdit" name="alamatEdit" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="kotaEdit">Kota:</label>
+                        <input type="text" class="form-control" id="kotaEdit" name="kotaEdit" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="provinsiEdit">Provinsi:</label>
+                        <input type="text" class="form-control" id="provinsiEdit" name="provinsiEdit" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Status:</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="statusEdit" id="statusAktifEdit" value="1" required>
+                            <label class="form-check-label" for="statusAktif">Aktif</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="statusEdit" id="statusNonAktifEdit" value="0" required>
+                            <label class="form-check-label" for="statusNonAktif">Non-Aktif</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" id="simpanEditKonsumen" data-id="">
+                    Simpan
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('input[type="radio"][name="status"]').change(function() {
+            var selectedValue = $(this).val();
+            console.log("Status terpilih: " + selectedValue);
+        });
+
+        // Memeriksa elemen radio button yang dipilih saat mengedit data
+        $('input[type="radio"][name="statusEdit"]').change(function() {
+            var selectedValue = $(this).val();
+            console.log("Status terpilih saat edit: " + selectedValue);
+        });
+
+        var dataTable = $('#data-table').DataTable({
+            "ajax": {
+                "url": "http://localhost:8080/konsumen",
+                "dataSrc": ""
+            },
+            "columns": [
+                {"data": "id"},
+                {"data": "nama"},
+                {"data": "alamat"},
+                {"data": "kota"},
+                {"data": "provinsi"},
+                {"data": "tgl_registrasi"},
+                {
+                    "data": "status",
+                    "render": function(data, type, row) {
+                        if (data === "1") {
+                            return "Aktif";
+                        } else {
+                            return "Non-Aktif";
+                        }
+                    }
+                },
+                {
+                    "data": "id",
+                    "render": function(data) {
+                        return '<button class="btn btn-info btn-sm edit-btn" data-id="' + data + '">Edit</button>' +
+                            '<button class="btn btn-danger btn-sm delete-btn" data-id="' + data + '">Hapus</button>';
+                    }
+                }
+            ]
+        });
+
+        $('#tambahKonsumenModalButton').click(function() {
+            $('#tambahKonsumenModal').modal('show');
+        });
+
+        $('#data-table tbody').on('click', 'button.edit-btn', function() {
+            var id = $(this).data('id');
+            $.ajax({
+                url: "http://localhost:8080/konsumen/" + id,
+                method: "GET",
+                success: function(data) {
+                    $("#namaEdit").val(data.nama);
+                    $("#alamatEdit").val(data.alamat);
+                    $("#kotaEdit").val(data.kota);
+                    $("#provinsiEdit").val(data.provinsi);
+                    $("#statusEdit").val(data.status);
+                    $("#simpanEditKonsumen").data('id', id);
+                    $('#editKonsumenModal').modal('show');
+                }
+            });
+        });
+
+        $('#simpanKonsumen').click(function() {
+            var konsumenData = {
+                nama: $("#nama").val(),
+                alamat: $("#alamat").val(),
+                kota: $("#kota").val(),
+                provinsi: $("#provinsi").val(),
+                status: $('input[name="status"]:checked').val()
+            };
+
+            $.ajax({
+                url: "http://localhost:8080/konsumen",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(konsumenData),
+                success: function(response) {
+                    location.reload();
+                },
+                error: function(error) {
+                    alert("Data tidak berhasil disimpan");
+                    location.reload();
+                }
+            });
+        });
+
+        $('#simpanEditKonsumen').click(function() {
+            var id = $(this).data('id');
+            var konsumenData = {
+                nama: $("#namaEdit").val(),
+                alamat: $("#alamatEdit").val(),
+                kota: $("#kotaEdit").val(),
+                provinsi: $("#provinsiEdit").val(),
+                status: $('input[name="statusEdit"]:checked').val()
+            };
+
+            $.ajax({
+                url: "http://localhost:8080/konsumen/" + id,
+                method: "PUT",
+                contentType: "application/json",
+                data: JSON.stringify(konsumenData),
+                success: function(response) {
+                    location.reload();
+                },
+                error: function(error) {
+                    alert("Data tidak berhasil disimpan");
+                    location.reload();
+                }
+            });
+        });
+
+        $('#data-table tbody').on('click', 'button.delete-btn', function() {
+            var id = $(this).data('id');
+
+            if (confirm('Anda yakin ingin menghapus data ini?')) {
+                $.ajax({
+                    url: "http://localhost:8080/konsumen/" + id,
+                    method: "DELETE",
+                    success: function(data) {
+                        location.reload();
+                    },
+                    error: function(error) {
+                        alert("Data tidak berhasil dihapus");
+                    }
+                });
+            }
+        });
+
+    });
+</script>
+</body>
+</html>
